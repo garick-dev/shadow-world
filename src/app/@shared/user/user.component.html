@@ -1,0 +1,25 @@
+<ng-container *ngIf="(user | async) as user">
+  <div class="user">
+    <div class="user__info">
+      <span class="user__name">
+      {{ user.name }}
+      </span>
+      <span>
+        Уровень: {{ user.level }}
+      </span>
+    </div>
+    <div class="exp">
+      <span>{{ user.exp }}</span>
+      <div class="exp__inner">
+      </div>
+    </div>
+
+    <div class="hp" [ngClass]="{
+    'green': user.hp > user.hpMax * 0.7,
+    'orange': user.hp > user.hpMax * 0.2 && user.hp <= user.hpMax * 0.7,
+    'red': user.hp <= user.hpMax * 0.2  }">
+      {{ user.hp }}
+    </div>
+  </div>
+</ng-container>
+

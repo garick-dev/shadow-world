@@ -1,0 +1,20 @@
+<ng-container *ngIf="(monster | async) as monster">
+  <div class="monster">
+    <div class="monster__image">
+      <img src="{{ monster.image }}" alt="{{monster.name}}">
+    </div>
+    <div class="hp" [ngClass]="{
+    'green': monster.hp > monster.hpMax * 0.7,
+    'orange': monster.hp > monster.hpMax * 0.2 && monster.hp <= monster.hpMax * 0.7,
+    'red': monster.hp <= monster.hpMax * 0.2  }">
+      {{ monster.hp }}
+    </div>
+    <span class="monster__name">
+      {{ monster.name }}
+    </span>
+    <span class="monster__description">
+    {{ monster.description }}
+    </span>
+  </div>
+</ng-container>
+

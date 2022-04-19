@@ -1,0 +1,12 @@
+<ng-container *ngIf="(user | async) as user">
+  <ng-container *ngIf="(monster | async) as monster ">
+  <span *ngIf="user.currentAttack >= 0">Вы атаковали с силой {{user.currentAttack}}</span>
+  <span *ngIf="monster.currentAttack >= 0">{{monster.name}} атаковал вас с силой {{monster.currentAttack}}</span>
+  <button class="attack" [disabled]="monster.hp === 0 || user.hp <= 0" (click)="attack()">
+    Атаковать
+  </button>
+  <span *ngIf="monster.hp === 0">Монстр убит</span>
+  <span *ngIf="user.hp <= 0">Вы убиты!</span>
+  </ng-container>
+</ng-container>
+
