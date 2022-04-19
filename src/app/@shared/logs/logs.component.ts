@@ -39,7 +39,6 @@ export class LogsComponent implements OnInit {
   }
 
   public attack(): void {
-    console.log("ASFA");
     this.fightService.attack();
   }
 

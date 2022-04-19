@@ -17,38 +17,34 @@ export class FightService {
     private readonly userService: UserService,
     private readonly monstersService: MonstersService,
   ) {
-    this.subscribeEmitters();
   }
 
-  public subscribeEmitters(): void{
+  public attack(): void{
     combineLatest([this.user, this.monster]).subscribe(
       ([user, monster]) => {
-        this.attack(user, monster);
+        if (user && monster) {
+          user.currentAttack = Math.floor((user.minAttack - monster.defence) + Math.random() * (((user.maxAttack + 1 - monster.defence) - (user.minAttack - monster.defence))));
+          monster.currentAttack = Math.floor((monster.minAttack - user.defence) + Math.random() * (((monster.maxAttack + 1 - user.defence) - (monster.minAttack - user.defence))));
+          if (user.currentAttack !== monster.hp && user.currentAttack < monster.hp) {
+            user.hp = user.hp - monster.currentAttack;
+            monster.hp = monster.hp - user.currentAttack;
+            this.userService.setUserInfoToLocal(user);
+            // userEmit.emit(user);
+          }
+          else {
+            user.currentAttack = monster.hp;
+            monster.hp = monster.hp - user.currentAttack;
+            user.hp -= monster.currentAttack;
+            user.exp += monster.exp;
+            // setStyleForExp();
+            this.userService.setUserInfoToLocal(user);
+            // userEmit.emit(user);
+            // this.monsterService.setMonstersToLocal();
+          }
+        }
+        // this.attack(user, monster);
       }
     )
   }
 
-
-  public attack(user?: IUser, monster?: IMonster): void {
-    if (user && monster) {
-      user.currentAttack = Math.floor((user.minAttack - monster.defence) + Math.random() * (((user.maxAttack + 1 - monster.defence) - (user.minAttack - monster.defence))));
-      monster.currentAttack = Math.floor((monster.minAttack - user.defence) + Math.random() * (((monster.maxAttack + 1 - user.defence) - (monster.minAttack - user.defence))));
-      if (user.currentAttack !== monster.hp && user.currentAttack < monster.hp) {
-        user.hp = user.hp - monster.currentAttack;
-        monster.hp = monster.hp - user.currentAttack;
-        // this.userService.setUserInfoToLocal(user);
-        // userEmit.emit(user);
-      }
-      else {
-        user.currentAttack = monster.hp;
-        monster.hp = monster.hp - user.currentAttack;
-        user.hp -= monster.currentAttack;
-        user.exp += monster.exp;
-        // setStyleForExp();
-        // userService.setUserInfoToLocal(user);
-        // userEmit.emit(user);
-        // this.monsterService.setMonstersToLocal();
-      }
-    }
-  }
 }

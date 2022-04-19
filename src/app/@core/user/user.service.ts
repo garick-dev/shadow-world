@@ -35,15 +35,15 @@ export class UserService{
   }
 
   public setUserInfoToLocal(user: IUser): void {
-    if (!localStorage.getItem('user')) {
-      const userString = JSON.stringify(this.user);
-      localStorage.setItem('user', userString);
-    }
-    else {
+    // if (!localStorage.getItem('user')) {
+    //   const userString = JSON.stringify(user);
+    //   localStorage.setItem('user', userString);
+    // }
+    // else {
       const userString = JSON.stringify(user);
       localStorage.setItem('user', userString);
-      this.user.next(user);
-    }
+      // this.user.next(user);
+    // }
   }
 
 
