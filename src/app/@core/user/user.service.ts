@@ -10,7 +10,11 @@ export class UserService{
 
   private readonly user: BehaviorSubject<IUser> = new BehaviorSubject<IUser>(this.storage.get('user') ?? null);
   public user$: Observable<IUser> = this.user.asObservable().pipe(
-    tap((user) => this.storage.set('user', user)),
+    tap((user) => {
+      this.storage.set('user', user);
+      this.setStyleForExp(user);
+    }
+    ),
   );
 
   private readonly userInfo: IUser = {
@@ -20,7 +24,7 @@ export class UserService{
     hpMax: 900,
     hp: 900,
     exp: 150,
-    expMax: 500,
+    expMax: 900,
     minAttack: 150,
     maxAttack: 170,
     currentAttack: -1,
@@ -30,28 +34,31 @@ export class UserService{
   constructor(
     @Inject(LOCAL_STORAGE) private readonly storage: StorageService,
   ) {
-    this.user.next(this.userInfo);
-    this.setUserInfoToLocal(this.userInfo);
+    if (this.user.getValue() === null) {
+      this.user.next(this.userInfo);
+    }
   }
 
   public setUserInfoToLocal(user: IUser): void {
-    // if (!localStorage.getItem('user')) {
-    //   const userString = JSON.stringify(user);
-    //   localStorage.setItem('user', userString);
-    // }
-    // else {
-      const userString = JSON.stringify(user);
-      localStorage.setItem('user', userString);
-      // this.user.next(user);
-    // }
+    this.storage.set('user', user);
   }
 
+  public setStyleForExp(user: IUser): void {
+    const expEl = document.querySelector<HTMLElement>(".exp__inner");
+    if (expEl) {
+      const expPercent = (user.exp / user.expMax) * 100;
+      expEl.style.width = `${expPercent}%`;
+    }
+  }
 
-  // public getUserInfoFromLocal(): any {
-  //   // TODO: Посмотреть на счет сокращение
-  //   const user = localStorage.getItem('user') ;
-  //   if (user) {
-  //       return JSON.parse(user);
-  //   }
-  // }
+  public healUser(user: IUser): void {
+    if (user.hp < user.hpMax) {
+      user.hp += 50;
+      if (user.hp > user.hpMax) {
+        user.hp = user.hpMax;
+      }
+    }
+    this.storage.set('user', user);
+  }
+
 }

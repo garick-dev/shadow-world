@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IUser} from "../../@core/user/user.interface";
 import {UserService} from "../../@core/user/user.service";
-import {Observable} from "rxjs";
+import {combineLatest, Observable} from "rxjs";
 
 @Component({
   selector: 'app-user',
@@ -15,11 +15,25 @@ export class UserComponent implements OnInit {
   constructor(
     private readonly userService: UserService,
   ) {
-    // this.user = userService.getUserInfoFromLocal();
   }
 
 
   ngOnInit(): void {
+    this.user.subscribe(
+      (user) => {
+        user.currentAttack = -1;
+        this.userService.setUserInfoToLocal(user);
+      }
+    )
   }
+
+  public healUser(): void {
+    this.user.subscribe(
+      (user) => {
+        this.userService.healUser(user);
+      }
+    )
+  }
+
 
 }

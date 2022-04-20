@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {IMonster} from "../../@core/monsters/monsters.intarface";
 import {IUser} from "../../@core/user/user.interface";
 import {UserService} from "../../@core/user/user.service";
@@ -11,13 +11,9 @@ import {FightService} from "../../@core/fight/fight.service";
   templateUrl: './logs.component.html',
   styleUrls: ['./logs.component.scss']
 })
-export class LogsComponent implements OnInit {
+export class LogsComponent implements OnInit, OnDestroy {
 
-  public user: Observable<IUser> = this.userService.user$.pipe(
-    tap((user)=> {
-      this.setStyleForExp(user);
-    })
-  );
+  public user: Observable<IUser> = this.userService.user$;
   public monster: Observable<IMonster> = this.monsterService.monster$;
 
   constructor(
@@ -29,13 +25,20 @@ export class LogsComponent implements OnInit {
 
   ngOnInit(): void { }
 
-
-  public setStyleForExp(user: IUser): void {
-    const expEl = document.querySelector<HTMLElement>(".exp__inner");
-    if (expEl) {
-      const expPercent = (user.exp / user.expMax) * 100;
-      expEl.style.width = `${expPercent}%`;
-    }
+  ngOnDestroy(): void {
+    this.user.subscribe(
+      (user) => {
+        user.currentAttack = -1;
+        this.userService.setUserInfoToLocal(user);
+      }
+    )
+    this.monster.subscribe(
+      (monster) => {
+        monster.currentAttack = -1;
+        monster.hp = monster.hpMax;
+        this.monsterService.setMonsterToLocal(monster);
+      }
+    )
   }
 
   public attack(): void {

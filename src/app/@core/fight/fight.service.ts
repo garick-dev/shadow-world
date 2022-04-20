@@ -29,20 +29,16 @@ export class FightService {
             user.hp = user.hp - monster.currentAttack;
             monster.hp = monster.hp - user.currentAttack;
             this.userService.setUserInfoToLocal(user);
-            // userEmit.emit(user);
           }
           else {
             user.currentAttack = monster.hp;
             monster.hp = monster.hp - user.currentAttack;
             user.hp -= monster.currentAttack;
             user.exp += monster.exp;
-            // setStyleForExp();
             this.userService.setUserInfoToLocal(user);
-            // userEmit.emit(user);
-            // this.monsterService.setMonstersToLocal();
+            this.userService.setStyleForExp(user);
           }
         }
-        // this.attack(user, monster);
       }
     )
   }

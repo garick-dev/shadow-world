@@ -9,9 +9,9 @@ import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 })
 export class MonstersService {
 
-  private readonly monster: BehaviorSubject<IMonster> = new BehaviorSubject<IMonster>(this.storage.get('monsters') ?? null);
+  private readonly monster: BehaviorSubject<IMonster> = new BehaviorSubject<IMonster>(this.storage.get('monster') ?? null);
   public monster$: Observable<IMonster> = this.monster.asObservable().pipe(
-    tap((user) => this.storage.set('user', user)),
+    tap((monster) => this.storage.set('monster', monster)),
   );
 
   private readonly monsterInfo: IMonster = {
@@ -31,19 +31,11 @@ export class MonstersService {
   constructor(
     @Inject(LOCAL_STORAGE) private readonly storage: StorageService,
   ) {
-    this.setMonstersToLocal();
+    this.monster.next(this.monsterInfo);
   }
 
-  public setMonstersToLocal(): void {
-      const monsterString = JSON.stringify(this.monsterInfo);
-      localStorage.setItem('monsters', monsterString);
+  public setMonsterToLocal(monster: IMonster): void {
+    this.storage.set('monster', monster);
   }
 
-  // public getMonstersFromLocal(): any {
-  //   //TODO: Перерасмотреть получение списка
-  //   const monsters = localStorage.getItem('monsters');
-  //   if (monsters) {
-  //     return JSON.parse(monsters);
-  //   }
-  // }
 }

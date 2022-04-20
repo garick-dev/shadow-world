@@ -14,9 +14,7 @@ export class MonsterComponent {
 
   constructor(
     private readonly monstersService: MonstersService,
-    // monsterService: MonstersService,
   ) {
-    // this.monster = monsterService.getMonstersFromLocal();
   }
 
   ngOnInit(): void {
